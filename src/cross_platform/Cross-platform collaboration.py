@@ -15,10 +15,10 @@ llm = init_chat_model(
 output_parser = StrOutputParser()
 
 #模拟业务函数
-@tool("tripFlight", description="预订机票的唯一工具，必须调用，参数是departure出发地、arrival目的地、date出行日期（格式2026-02-01）")
+@tool("tripFlight", description="预订机票的唯一工具，必须调用，参数是departure出发地、arrival目的地、date出行日期（格式2026-10-01）")
 def ctrip_book_flight(departure: str, arrival: str, date: str) -> str:
     """携程订机票：固定返回测试结果"""
-    return f"【携程机票预订成功】\n出发地：{departure}\n目的地：{arrival}\n出行日期：{date}\n航班号：CA1885（北京首都T3→上海浦东T2）\n起飞时间：14:00\n降落时间：16:30\n座位：经济舱34A\n电子客票号：999-1234567890\n舱位等级：经济舱超级经济座"
+    return f"【携程机票预订成功】\n出发地：{departure}\n目的地：{arrival}\n出行日期：{date}\n航班号：CA1885（北京首都→上海浦东）\n起飞时间：14:00\n降落时间：16:30\n座位：经济舱34A\n电子客票号：999-1234567890\n舱位等级：经济舱超级经济座"
 
 @tool("MeituanBookHotel", description="预订酒店的唯一工具，必须调用，参数是city城市、near_by附近地标、check_in入住日期、check_out离店日期")
 def meituan_book_hotel(city: str, near_by: str, check_in: str, check_out: str) -> str:
@@ -30,7 +30,7 @@ def didi_book_taxi(start: str, end: str, time: str) -> str:
     """滴滴打车：固定返回测试结果"""
     return f"【滴滴打车预约成功】\n起点：{start}\n终点：{end}\n用车时间：{time}\n车型：滴滴快车（舒适型）\n司机姓名：王师傅\n车牌号：沪A12345\n司机电话：13800138000\n预估费用：35元（券后立减5元，实付30元）\n预计接驾时间：16:35\n车型空间：5座，可放2件24寸行李箱"
 
-# ===================== 专属Agent（工具绑定逻辑） =====================
+# Agent工具绑定
 def create_ctrip_agent(llm):
     llm_with_tools = llm.bind_tools([ctrip_book_flight])
     prompt = ChatPromptTemplate.from_messages([
@@ -64,7 +64,7 @@ def create_didi_agent(llm):
     ])
     return prompt | llm_with_tools | output_parser
 
-# ===================== 总协调Agent =====================
+# 总协调Agent
 
 def create_travel_coordinator_agent(llm, ctrip_chain, meituan_chain, didi_chain):
 
